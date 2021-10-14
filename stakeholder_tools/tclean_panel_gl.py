@@ -23,7 +23,9 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
         self.standard.setUp()
         self.standard.config_file = config_file
 
-        pn.template.GoldenTemplate(title="Interactive Clean")
+        self.layout = pn.template.GoldenTemplate(
+            title="Interactive Stakeholder Tests"
+        )
         
         # Image
 
@@ -315,9 +317,16 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             name="Play", 
             button_type="success",  
             width=300
-        )  
+        )
+
+        self.exit_button = pn.widgets.Button(
+            name="Exit", 
+            button_type="danger",  
+            width=300
+        )    
         
         self.play_button.on_click(self._clean)
+        self.exit_button.on_click(self._exit)
     
     
         image_controls = pn.Column(
@@ -330,7 +339,7 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             self.stokes_widget,
             self.nchan_widget,
             self.niter_widget,
-            self.play_button
+            #self.play_button
         )
 
         analysis_controls = pn.Column(
@@ -363,7 +372,7 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
                     self.growiterations_widget,
                     self.savemodel_widget
                 )
-            ), self.play_button
+            ), 
         )
 
         boolean_controls = pn.Column(
@@ -374,47 +383,45 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             self.fastnoise_widget,
             self.parallel_widget,
             self.verbose_widget,
-            self.play_button
-        )
-        
             
+        )
+
         if self.terminal is True:
             sys.stdout = self.terminal_widget
             sys.stderr = self.terminal_widget
-            self.layout = pn.Row(
-                pn.Column(
-                    self.file_widget, 
-                    pn.Tabs(
-                        ('Image', image_controls), 
-                        ('Analysis', analysis_controls),
-                        ('Boolean', boolean_controls)
+            self.layout.sidebar.append(self.file_widget)
+            self.layout.main.append(pn.Tabs(
+                    ('Image', image_controls), 
+                    ('Analysis', analysis_controls),
+                    ('Boolean', boolean_controls)
+                )
+            )
+            self.layout.main.append(pn.Row(
+                self.terminal_widget,
+                    pn.Column(
+                        self.play_button, 
+                        self.exit_button
                     )
-                ), self.terminal_widget,
+                )
             )
             
             self.layout.show()
         else:
-            self.play_button.visible = False
-            self.layout = pn.Row(
-            pn.Column(
-                pn.Card(
-                    self.file_widget, 
-                    width=900, 
-                    header_background = '#21618C',
-                    header_color = 'white', 
-                    title='File Selector'),
-                pn.Card( 
-                    pn.Tabs(
-                        ('Image', image_controls), 
-                        ('Analysis', analysis_controls),
-                        ('Boolean', boolean_controls)), 
-                    width=900,
-                    header_background=' #21618C',
-                    header_color = 'white', 
-                    title='TClean Controls'
+            sys.stdout = self.terminal_widget
+            sys.stderr = self.terminal_widget
+            self.layout.sidebar.append(self.file_widget)
+            self.layout.main.append(pn.Tabs(
+                    ('Image', image_controls), 
+                    ('Analysis', analysis_controls),
+                    ('Boolean', boolean_controls)
                 )
             )
-        )
+            self.layout.main.append(
+                pn.row(
+                    self.play_button)
+                )
+            
+            self.layout
 
 
     # Private utility functions
@@ -425,6 +432,9 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
 
     def _clean(self, event):
         self.standard.test_standard_cube()
+
+    def _exit(self, event):
+        sys.exit('Exiting interactive stakeholder test.')
     
     def _set_interactive(self, event):
             if self.interactive_widget.value is True:
