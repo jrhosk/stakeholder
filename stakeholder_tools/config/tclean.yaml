@@ -1,0 +1,47 @@
+tclean-first-cycle:
+ vis: "E6.1.00034.S_tclean.ms"
+ imagename: "standard_cube" 
+ imsize: 512 
+ cell: "1.1arcsec"
+ specmode: "cube" 
+ interpolation: "nearest"
+ nchan: 508 
+ start: "220.2526743594GHz" 
+ width: "0.2441741MHz" 
+ pblimit: 0.2
+ deconvolver: "hogbom"
+ niter: 0
+ cyclefactor: 2 
+ parallel: False
+ calcres: True
+ calcpsf: True
+ scales:
+  - 0
+  - 3
+  - 10
+
+tclean-second-cycle:
+ vis: "E6.1.00034.S_tclean.ms"
+ imagename: "standard_cube" 
+ imsize: 512 
+ cell: "1.1arcsec"
+ specmode: "cube" 
+ interpolation: "nearest"
+ nchan: 508 
+ start: "220.2526743594GHz" 
+ width: "0.2441741MHz" 
+ pblimit: 0.2
+ deconvolver: "hogbom"
+ niter: 20000
+ restoration: True
+ pbcor: True
+ cyclefactor: 2 
+ interactive: 0
+ restart: True
+ threshold: '0.354Jy'
+ calcres: False
+ calcpsf: False
+ scales:
+  - 0
+  - 3
+  - 10
