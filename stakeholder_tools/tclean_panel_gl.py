@@ -339,7 +339,6 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             self.stokes_widget,
             self.nchan_widget,
             self.niter_widget,
-            #self.play_button
         )
 
         analysis_controls = pn.Column(
@@ -390,15 +389,15 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             sys.stdout = self.terminal_widget
             sys.stderr = self.terminal_widget
             self.layout.sidebar.append(self.file_widget)
-            self.layout.main.append(pn.Tabs(
+            self.layout.sidebar.append(pn.Tabs(
                     ('Image', image_controls), 
                     ('Analysis', analysis_controls),
                     ('Boolean', boolean_controls)
                 )
             )
-            self.layout.main.append(pn.Row(
+            self.layout.main.append(pn.Column(
                 self.terminal_widget,
-                    pn.Column(
+                    pn.Row(
                         self.play_button, 
                         self.exit_button
                     )
@@ -407,22 +406,33 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
             
             self.layout.show()
         else:
-            sys.stdout = self.terminal_widget
-            sys.stderr = self.terminal_widget
-            self.layout.sidebar.append(self.file_widget)
-            self.layout.main.append(pn.Tabs(
-                    ('Image', image_controls), 
-                    ('Analysis', analysis_controls),
-                    ('Boolean', boolean_controls)
+            self.play_button.visible = False
+            self.exit_button.visible = False
+            
+            self.layout = pn.Row(
+            pn.Column(
+                pn.Card(
+                    self.file_widget,
+                    width=900,
+                    header_background = '#21618C',
+                    header_color = 'white',
+                    title='File Selector'),
+                pn.Card(
+                    pn.Tabs(
+                        ('Image', image_controls),
+                        ('Analysis', analysis_controls),
+                        ('Boolean', boolean_controls)),
+                    width=900,
+                    header_background=' #21618C',
+                    header_color = 'white',
+                    title='TClean Controls'
+                ),
+                pn.Row(
+                    self.play_button, self.exit_button,
                 )
             )
-            self.layout.main.append(
-                pn.row(
-                    self.play_button)
-                )
+        )
             
-            self.layout
-
 
     # Private utility functions
     
@@ -473,6 +483,9 @@ class TCleanPanel(tclean_options.TCleanOptionsBaseClass):
     def clean(self):
         self.standard.test_standard_cube()
 
-    def param_panel(self):
-        return self.layout
+    def show(self):
+        if self.terminal is True:
+            return self.layout.show()
+        else:
+            return self.layout
         
