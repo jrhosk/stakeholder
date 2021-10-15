@@ -1,4 +1,4 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://hub.gke2.mybinder.org/user/jrhosk-stakeholder-hhfzm69d/doc/tree/demo/stats_table_demo.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jrhosk/stakeholder.git/HEAD?labpath=demo%2Fstats_table_demo.ipynb)
 
 A set of demo notebooks for stakeholder interactive tools.
 
