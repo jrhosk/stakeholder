@@ -232,7 +232,7 @@ class test_tclean_base(unittest.TestCase):
             usepointing, restoration, pbcor, weighting, restoringbeam, robust, npixels, 
             niter, threshold, nsigma, interactive, usemask, sidelobethreshold, noisethreshold, 
             lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, 
-            minpercentchange, calcres, calcpsf, fastnoise, savemodel, verbose):
+            minpercentchange, calcres, calcpsf, fastnoise, restart, savemodel, verbose):
         
         tclean(vis=vis, imagename=imagename, field=field, 
                spw=spw, imsize=imsize, antenna=antenna, 
@@ -248,7 +248,7 @@ class test_tclean_base(unittest.TestCase):
                interactive=interactive, usemask=usemask, sidelobethreshold=sidelobethreshold, 
                noisethreshold=noisethreshold, lownoisethreshold=lownoisethreshold, negativethreshold=negativethreshold, 
                minbeamfrac=minbeamfrac, growiterations=growiterations, dogrowprune=dogrowprune, minpercentchange=minpercentchange, 
-               calcres=calcres, calcpsf=calcpsf, fastnoise=fastnoise, savemodel=savemodel, verbose=verbose)
+               calcres=calcres, calcpsf=calcpsf, fastnoise=fastnoise, restart=restart, savemodel=savemodel, verbose=verbose)
 
 
     def copy_products(self, old_pname, new_pname, ignore=None):
