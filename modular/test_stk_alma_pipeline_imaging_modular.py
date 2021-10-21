@@ -139,13 +139,13 @@ savemetricdict=False
 
 ## Base Test class with Utility functions
 class test_tclean_base(unittest.TestCase):
-    
-    @staticmethod
-    def set_file_path(path):
-        if os.path.exists() is False:
+
+    def set_file_path(self, path):
+        if os.path.exists(path) is False:
             print('File path: ' + path + ' does not exist. Ceck input adn try again.')
         else:
-            data_path = path
+            self.data_path = path
+            print('Setting data_path: ' + self.data_path)
 
     def setUp(self):
         self._myia = _ia
@@ -156,7 +156,7 @@ class test_tclean_base(unittest.TestCase):
         self.parallel = False
         if ParallelTaskHelper.isMPIEnabled():
             self.parallel = True
-        self.expdict_jsonfile = data_path+'test_stk_alma_pipeline_imaging_exp_dicts.json'
+        self.expdict_jsonfile = self.data_path+'test_stk_alma_pipeline_imaging_exp_dicts.json'
         self.refversion='6.3.0.22'
 
     def tearDown(self):
@@ -604,13 +604,14 @@ class Test_standard(test_tclean_base):
 
             self.file_name = self.remove_prefix(self.test_name, 'test_')+'.iter'
             self.img = os.getcwd()+'/'+self.file_name+'1'
-            self.prepData(data_path+'E2E6.1.00034.S_tclean.ms')
+            self.prepData(self.data_path+'E2E6.1.00034.S_tclean.ms')
             self.getExpdicts(self.test_name)
         else:
             self.test_name = self._testMethodName
 
             self.file_name = self.remove_prefix(self.test_name, 'test_')+'.iter'
             self.img = os.getcwd()+'/'+self.file_name+'1'
+            self.set_file_path(data_path)
             self.prepData(data_path+'E2E6.1.00034.S_tclean.ms')
             self.getExpdicts(self.test_name)
             self.standard_cube_clean()
