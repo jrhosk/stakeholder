@@ -82,6 +82,7 @@ And for mtmfs
 ##########################################################################
 
 # Imports #
+from abc import abstractmethod
 import os
 import glob
 import sys
@@ -138,6 +139,13 @@ savemetricdict=False
 
 ## Base Test class with Utility functions
 class test_tclean_base(unittest.TestCase):
+    
+    @staticmethod
+    def set_file_path(path):
+        if os.path.exists() is False:
+            print('File path: ' + path + ' does not exist. Ceck input adn try again.')
+        else:
+            data_path = path
 
     def setUp(self):
         self._myia = _ia
@@ -217,6 +225,31 @@ class test_tclean_base(unittest.TestCase):
         report += th.check_val(passed, True, valname=suffix+' chan'+str(chans), exact=True)[1]
 
         return report
+
+    def clean(self, vis, imagename, field, spw, imsize, antenna, scan, intent, 
+            datacolumn, cell, phasecenter, stokes, specmode, nchan, start, width, 
+            outframe, pblimit, perchanweightdensity, gridder,  mosweight, deconvolver, 
+            usepointing, restoration, pbcor, weighting, restoringbeam, robust, npixels, 
+            niter, threshold, nsigma, interactive, usemask, sidelobethreshold, noisethreshold, 
+            lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, 
+            minpercentchange, calcres, calcpsf, fastnoise, savemodel, verbose):
+        
+        tclean(vis=vis, imagename=imagename, field=field, 
+               spw=spw, imsize=imsize, antenna=antenna, 
+               scan=scan, intent=intent, 
+               datacolumn=datacolumn, cell=cell, phasecenter=phasecenter, 
+               stokes=stokes, specmode=specmode, 
+               nchan=nchan, start=start, width=width, 
+               outframe=outframe, pblimit=pblimit, perchanweightdensity=perchanweightdensity, 
+               gridder=gridder,  mosweight=mosweight, 
+               deconvolver=deconvolver, usepointing=usepointing, restoration=restoration, 
+               pbcor=pbcor, weighting=weighting, restoringbeam=restoringbeam, 
+               robust=robust, npixels=npixels, niter=niter, threshold=threshold, nsigma=nsigma, 
+               interactive=interactive, usemask=usemask, sidelobethreshold=sidelobethreshold, 
+               noisethreshold=noisethreshold, lownoisethreshold=lownoisethreshold, negativethreshold=negativethreshold, 
+               minbeamfrac=minbeamfrac, growiterations=growiterations, dogrowprune=dogrowprune, minpercentchange=minpercentchange, 
+               calcres=calcres, calcpsf=calcpsf, fastnoise=fastnoise, savemodel=savemodel, verbose=verbose)
+
 
     def copy_products(self, old_pname, new_pname, ignore=None):
         """ function to copy iter0 images to iter1 images
@@ -568,15 +601,22 @@ class Test_standard(test_tclean_base):
             import inspect
 
             self.test_name = inspect.currentframe().f_code.co_name         
+
+            self.file_name = self.remove_prefix(self.test_name, 'test_')+'.iter'
+            self.img = os.getcwd()+'/'+self.file_name+'1'
+            self.prepData(data_path+'E2E6.1.00034.S_tclean.ms')
+            self.getExpdicts(self.test_name)
         else:
             self.test_name = self._testMethodName
 
-        self.file_name = self.remove_prefix(self.test_name, 'test_')+'.iter'
-        self.img = os.getcwd()+'/'+self.file_name+'1'
-        self.prepData(data_path+'E2E6.1.00034.S_tclean.ms')
-        self.getExpdicts(self.test_name)
+            self.file_name = self.remove_prefix(self.test_name, 'test_')+'.iter'
+            self.img = os.getcwd()+'/'+self.file_name+'1'
+            self.prepData(data_path+'E2E6.1.00034.S_tclean.ms')
+            self.getExpdicts(self.test_name)
+            self.standard_cube_clean()
+            self.standard_cube_report()
 
-    def clean0(self):
+    def standard_cube_clean(self):
         print("\nSTARTING: iter0 routine")
 
         # iter0 routine
@@ -602,7 +642,6 @@ class Test_standard(test_tclean_base):
         print('Copying iter0 files to iter1')
         self.copy_products(self.file_name+'0', self.file_name+'1')
 
-    def clean1(self):
         print("STARTING: iter1 routine")
 
         # iter1 (restart)
@@ -626,7 +665,7 @@ class Test_standard(test_tclean_base):
             parallel=self.parallel, verbose=True)
 
 
-    def build_report(self):
+    def standard_cube_report(self):
         # retrieve per-channel beam statistics
         bmin_dict, bmaj_dict, pa_dict = \
             self.cube_beam_stats(image=self.img+'.psf')
