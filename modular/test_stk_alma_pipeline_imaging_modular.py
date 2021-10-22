@@ -160,6 +160,7 @@ class test_tclean_base(unittest.TestCase):
         if 'self.data_path' in locals():
             pass
         else:
+            print("Setting self.data_path to data_path")
             self.data_path = data_path  
         
         
