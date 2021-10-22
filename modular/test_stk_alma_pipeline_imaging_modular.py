@@ -156,6 +156,13 @@ class test_tclean_base(unittest.TestCase):
         self.parallel = False
         if ParallelTaskHelper.isMPIEnabled():
             self.parallel = True
+        
+        if 'self.data_path' in locals():
+            pass
+        else:
+            self.data_path = data_path  
+        
+        
         self.expdict_jsonfile = self.data_path+'test_stk_alma_pipeline_imaging_exp_dicts.json'
         self.refversion='6.3.0.22'
 
