@@ -157,7 +157,7 @@ class test_tclean_base(unittest.TestCase):
         if ParallelTaskHelper.isMPIEnabled():
             self.parallel = True
         
-        if 'self.data_path' in locals():
+        if hasattr(self,'data_path'):
             pass
         else:
             print("Setting self.data_path to data_path")
