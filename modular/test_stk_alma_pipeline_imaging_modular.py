@@ -157,6 +157,10 @@ class test_tclean_base(unittest.TestCase):
         if ParallelTaskHelper.isMPIEnabled():
             self.parallel = True
         
+        # Determine whether or not self.data_path exists. If it is, set_file_path() has
+        # been run and self.data_path is a local data path. Otherwise, set self.data_path
+        # to the path used for unittesting.
+
         if hasattr(self,'data_path'):
             pass
         else:
@@ -233,31 +237,6 @@ class test_tclean_base(unittest.TestCase):
         report += th.check_val(passed, True, valname=suffix+' chan'+str(chans), exact=True)[1]
 
         return report
-
-    def clean(self, vis, imagename, field, spw, imsize, antenna, scan, intent, 
-            datacolumn, cell, phasecenter, stokes, specmode, nchan, start, width, 
-            outframe, pblimit, perchanweightdensity, gridder,  mosweight, deconvolver, 
-            usepointing, restoration, pbcor, weighting, restoringbeam, robust, npixels, 
-            niter, threshold, nsigma, interactive, usemask, sidelobethreshold, noisethreshold, 
-            lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, 
-            minpercentchange, calcres, calcpsf, fastnoise, restart, savemodel, verbose):
-        
-        tclean(vis=vis, imagename=imagename, field=field, 
-               spw=spw, imsize=imsize, antenna=antenna, 
-               scan=scan, intent=intent, 
-               datacolumn=datacolumn, cell=cell, phasecenter=phasecenter, 
-               stokes=stokes, specmode=specmode, 
-               nchan=nchan, start=start, width=width, 
-               outframe=outframe, pblimit=pblimit, perchanweightdensity=perchanweightdensity, 
-               gridder=gridder,  mosweight=mosweight, 
-               deconvolver=deconvolver, usepointing=usepointing, restoration=restoration, 
-               pbcor=pbcor, weighting=weighting, restoringbeam=restoringbeam, 
-               robust=robust, npixels=npixels, niter=niter, threshold=threshold, nsigma=nsigma, 
-               interactive=interactive, usemask=usemask, sidelobethreshold=sidelobethreshold, 
-               noisethreshold=noisethreshold, lownoisethreshold=lownoisethreshold, negativethreshold=negativethreshold, 
-               minbeamfrac=minbeamfrac, growiterations=growiterations, dogrowprune=dogrowprune, minpercentchange=minpercentchange, 
-               calcres=calcres, calcpsf=calcpsf, fastnoise=fastnoise, restart=restart, savemodel=savemodel, verbose=verbose)
-
 
     def copy_products(self, old_pname, new_pname, ignore=None):
         """ function to copy iter0 images to iter1 images
@@ -603,8 +582,14 @@ class Test_standard(test_tclean_base):
     @stats_dict(test_dict)
     # @unittest.skip("")
     def test_standard_cube(self):
-        ''' Standard (single field) cube imaging - central field of SMIDGE_NWCloud (field 3), spw 22 '''
+        ''' Standard (single field) cube imaging - central field of SMIDGE_NWCloud (field 3), spw 22 
+        '''
 
+
+        # If running as a unittest, the testMethodName will be set to the method name,
+        # otherwise it will be "runTest". If the later is the case, get the method name
+        # from the stack and and set the test_name manually.
+        
         if self._testMethodName is "runTest":
             import inspect
 
