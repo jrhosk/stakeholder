@@ -1,8 +1,8 @@
-def make_moment_plot(imname='',chan=0):
-    import casatasks
-    import casatools
-    import pylab as pl
+import casatasks
+import casatools
+import pylab as pl
 
+def make_moment_plot(imname='',chan=0):
     casatasks.immoments(imagename = imname, moments = 8, outfile = imname+'.moment8')
 
     ia = casatools.image()
