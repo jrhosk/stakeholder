@@ -33,4 +33,4 @@ def make_moment_plot(imname='',chan=0):
     pl.xlabel('Right Ascension')
     pl.ylabel('Declination')
     
-    pl.imsave(imname + '.momen.png', pix[p1:p2,p1:p2].transpose())
+    pl.imsave(imname + '.moment8.png', pix[p1:p2,p1:p2].transpose())

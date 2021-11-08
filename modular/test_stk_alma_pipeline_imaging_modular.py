@@ -802,8 +802,7 @@ class Test_standard(test_tclean_base):
 
             self.save_dict_to_file(self.test_name,savedict, self.test_name+'_cur_stats')
 
-        self.assertTrue(th.check_final(pstr = report), \
-            msg = failed)
+        self.assertTrue(th.check_final(pstr = report), msg = failed)
 
 # End of test_standard_cube
 #-------------------------------------------------#
