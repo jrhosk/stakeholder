@@ -770,8 +770,9 @@ class Test_standard(test_tclean_base):
         #self.mom8_creator(image=self.img+'.image', range_list=[0.3, 1.0])
         #self.mom8_creator(image=self.img+'.residual', range_list=[0.3, 1.0])
 
-        plt_utils.make_moment_plot(imname=img + '.image', chan=0)
-        plt_utils.make_moment_plot(imname=img + '.residual', chan=0)
+        print('image: ' + self.img)
+        plt_utils.make_moment_plot(imname=self.img + '.image', chan=0)
+        plt_utils.make_moment_plot(imname=self.img + '.residual', chan=0)
 
         test_dict[self.test_name]['images'].extend( \
             (self.img+'.image.moment8.png',self.img+'.residual.moment8.png'))
