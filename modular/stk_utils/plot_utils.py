@@ -1,6 +1,10 @@
 import casatasks
 import casatools
 import pylab as pl
+import numpy as np
+
+from astropy.io import fits
+from astropy.wcs import WCS
 
 def make_moment_plot(imname='',chan=0):
     casatasks.immoments(imagename = imname, moments = 8, outfile = imname+'.moment8')
