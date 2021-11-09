@@ -273,7 +273,9 @@ class test_tclean_base(unittest.TestCase):
         self._myia.close()
 
         return bmin_dict, bmaj_dict, pa_dict
-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
+
+    def image_stats(self, image, fit_region=None, field_regions=None, masks=None):
+        """ function that takes an image file and returns a statistics
             dictionary
         """
         self._myia.open(image)
@@ -334,7 +336,23 @@ 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
                                 fit_dict['shape']['majoraxis']['value'], \
                                 fit_dict['shape']['minoraxis']['value']]
                             stats_dict['fit_loc_chan_'+str(i)] = fit_dict['spectrum']['channel']
-                            stats_dict['fit_loc_freq_'+str(i)] = \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
+                            stats_dict['fit_loc_freq_'+str(i)] = \
+                                fit_dict['spectrum']['frequency']['m0']['value']
+                            stats_dict['fit_pix_'+str(i)] = \
+                                fit_dict['pixelcoords'].tolist()
+                        except KeyError:
+                            stats_dict['fit_'+str(i)] = [1.0, 1.0, 1.0]
+                            stats_dict['fit_loc_chan_'+str(i)] = 1.0
+                            stats_dict['fit_loc_freq_'+str(i)] = 1.0
+                            stats_dict['fit_pix_'+str(i)] = [1.0, 1.0]
+                        i += 1
+                if '.model' in imagename:
+                    fit_region = fit_region
+                if '.model' not in imagename and '.pb' not in imagename and '.psf' not in imagename:
+                    # WARN: If max value channel is 0, tool fits all channels
+                    fit_region = fit_region + ', range=[%schan,%schan]' \
+                        % (stats_dict['max_val_pos'][3], \
+                        stats_dict['max_val_pos'][3])
             if '.psf' in imagename and '_cube' in imagename:
                 stats_dict['regn_sum'] = self._myia.statistics( \
                     region=fit_regions[1])['sum'][0]
@@ -402,7 +420,10 @@ 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
             if 'mosaic' in imagename:
                 stats_dict['pb_mask_0.2'] = pb_mask_02
                 stats_dict['pb_mask_0.5'] = pb_mask_05
-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
+
+        if 'model' in imagename or image.endswith('.alpha'):
+            stats_dict['mask_non0'] = numpy.count_nonzero(chunk*masks)
+
         if 'weight' in imagename:
             if 'cube' in imagename:
                 wt_02_list = []
@@ -420,7 +441,13 @@ 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
 
         self._myia.close()
 
-        return stats_dict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
+        return stats_dict
+
+    def image_list(self, image, mode):
+        """ function used to return expected imaging output files """
+        standard = [image+'.psf', image+'.residual', image+'.image', \
+            image+'.image.pbcor', image+'.mask', image+'.pb', image+'.model', \
+            image+'.sumwt']
         mosaic = [image+'.weight']
         mtmfs = [image+'.alpha', image+'.alpha.error', image+'.alpha.pbcor', \
            image+'.psf.tt0', image+'.psf.tt1', image+'.psf.tt2', \
@@ -456,7 +483,15 @@ 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
             image already opened
         """
         pyplot.clf()
-        box = str(max_loc[0])+','+str(max_loc[1])+','+str(max_loc[0])+','+str(max_loc[1])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
+        box = str(max_loc[0])+','+str(max_loc[1])+','+str(max_loc[0])+','+str(max_loc[1])
+        profile = self._myia.fitprofile(box=box)['gs']['amp'][0][0][0][0][0]
+        X = self._myia.getchunk(blc=max_loc, trc=max_loc, axes=[0,1])[0][0][0]
+        pyplot.title('Frequency Profile at Max Value Position')
+        pyplot.xlabel('Channel Number')
+        pyplot.xlim(0,(nchan+1))
+        pyplot.ylabel('Amplitude (Jy/Beam)')
+        pyplot.plot(X)
+        pyplot.savefig(image+'.profile.png')
         pyplot.clf()
 
         return profile
@@ -469,7 +504,13 @@ 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
         else:
             filter='Pass'
 
-        if report!='':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
+        if report!='':
+            testItems = report.split('\n')
+            retitems=[]
+            for testitem in testItems:
+                if '[ check_ims ]' in testitem or '[ check_pixmask ]' in testitem or '[ check_val ]' in testitem:
+                    if '( '+filter in testitem:
+                        retitems.append(testitem)
             nfail = len(retitems)
             msg = str(nfail)+' individual test failure(s) '
             ret = '\n' + '\n'.join(retitems)
@@ -595,7 +636,7 @@ class Test_standard(test_tclean_base):
 
         # move files to iter1
         print('Copying iter0 files to iter1')
-        self.copy_products(self.file_name+'0', self.file_name+'1')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
+        self.copy_products(self.file_name+'0', self.file_name+'1')
 
         print("STARTING: iter1 routine")
 
