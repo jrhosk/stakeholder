@@ -113,7 +113,7 @@ try:
     from casatasks.private.imagerhelpers.parallel_imager_helper import PyParallelImagerHelper
     from casaviewer import imview
     
-    import stakeholder.modular.stk_utils.plot_utils as plt_utils
+    import stk_utils.plot_utils as plt_utils
 
     CASA6 = True
     _ia = image()
@@ -767,12 +767,11 @@ class Test_standard(test_tclean_base):
         test_dict[self.test_name]['images'] = []
 
         self.img = shutil._basename(self.img)
-        #self.mom8_creator(image=self.img+'.image', range_list=[0.3, 1.0])
-        #self.mom8_creator(image=self.img+'.residual', range_list=[0.3, 1.0])
+        self.mom8_creator(image=self.img+'.image', range_list=[0.3, 1.0])
+        self.mom8_creator(image=self.img+'.residual', range_list=[0.3, 1.0])
 
-        print('image: ' + self.img)
-        plt_utils.make_moment_plot(imname=self.img + '.image', chan=0)
-        plt_utils.make_moment_plot(imname=self.img + '.residual', chan=0)
+        #plt_utils.make_moment_plot(imname=self.img + '.image', chan=0)
+        #plt_utils.make_moment_plot(imname=self.img + '.residual', chan=0)
 
         test_dict[self.test_name]['images'].extend( \
             (self.img+'.image.moment8.png',self.img+'.residual.moment8.png'))

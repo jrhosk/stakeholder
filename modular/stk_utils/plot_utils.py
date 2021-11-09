@@ -35,4 +35,4 @@ def make_moment_plot(imname='',chan=0):
     pl.ylabel('Declination')
     
     pl.imsave(imname + '.moment8.png', pix[p1:p2,p1:p2].transpose())
-    subprocess.call('mogrify -trim '+image+'.moment8.png', shell=True)
+    subprocess.call('mogrify -trim '+imname+'.moment8.png', shell=True)
