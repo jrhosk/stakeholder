@@ -7,12 +7,20 @@ import subprocess
 from astropy.io import fits
 from astropy.wcs import WCS
 
-def make_moment_plot(imname='',chan=0):
-    casatasks.immoments(imagename = imname, moments = 8, outfile = imname+'.moment8')
+def plot_image(imname:str, type="", chan=0, trim=False):
+    """ 
+        Utility function to produce a .png plot from a .image file.
+
+    Args:
+        imname (str, required): Image file name.
+        type (str, optional): Additional image type qualifiers. Defaults to "".
+        chan (int, optional): Channel number. Defaults to 0.
+        trim (bool, optional): Apply imagemagik mogrify -trim to plot. Defaults to False.
+    """
 
     ia = casatools.image()
 
-    ia.open(imname + '.moment8')
+    ia.open(imname + type)
     pix = ia.getchunk()[:,:,0,chan]
     csys = ia.coordsys()
     ia.close()
@@ -34,5 +42,7 @@ def make_moment_plot(imname='',chan=0):
     pl.xlabel('Right Ascension')
     pl.ylabel('Declination')
     
-    pl.imsave(imname + '.moment8.png', pix[p1:p2,p1:p2].transpose())
-    subprocess.call('mogrify -trim '+imname+'.moment8.png', shell=True)
+    pl.imsave(imname + type + '.png', pix[p1:p2,p1:p2].transpose())
+
+    if trim is True:
+        subprocess.call('mogrify -trim ' + imname + type + '.png', shell=True)
